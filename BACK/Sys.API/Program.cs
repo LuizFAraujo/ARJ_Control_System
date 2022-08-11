@@ -1,12 +1,27 @@
+using Microsoft.EntityFrameworkCore;
+using Sys.API.DataDb;
+using Sys.API.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // =================================================================
-
-
+//Contexto criado (Banco de Dados):
+builder.Services.AddDbContext<DataDbContext>(
+    options => options.UseSqlite(builder.Configuration.GetConnectionString("Default")));
 
 // =================================================================
 
+// -------------------------------
+// Toda vez que "alguém" precisar de um "IAtividadeRepo",
+// passa para esse "alguém" o "AtividadeRepo".
+// builder.Services.AddScoped<IAtividadeRepo, AtividadeRepo>();
 
+// builder.Services.AddScoped<Codigo>();
+
+// similar ...
+
+
+// =================================================================
 
 
 // Add services to the container.
