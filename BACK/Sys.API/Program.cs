@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 using Sys.API.DataDb;
 using Sys.API.Models;
@@ -25,7 +26,18 @@ builder.Services.AddDbContext<DataDbContext>(
 
 
 // Add services to the container.
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(op =>
+    {
+        // para exibir textos dos enums, ao invés de números
+        op.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    });
+
+
+// ===================================
+// ===================================
+
+
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

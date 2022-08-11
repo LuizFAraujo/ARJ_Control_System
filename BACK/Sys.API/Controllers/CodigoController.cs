@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Sys.API.DataDb;
 using Sys.API.Models;
 
 namespace Sys.API.Controllers
@@ -11,47 +12,80 @@ namespace Sys.API.Controllers
     [Route("api/[controller]")]
     public class CodigoController : ControllerBase
     {
+        private readonly DataDbContext _context;
 
+        public CodigoController(DataDbContext context)
+        {
+            _context = context;
 
+        }
 
-        public IEnumerable<Codigo> CodigosLista = new List<Codigo>(){
-                new Codigo(1),
-                new Codigo(2),
-                new Codigo(3),
-            };
-
-
-
+        // ================================================================
         [HttpGet]
         public IEnumerable<Codigo> Get()
         {
-            return CodigosLista;
+            return _context.Codigos;
 
         }
 
+        // ================================================================
         [HttpGet("{id}")]
         public Codigo Get(int id)
         {
-            return CodigosLista.FirstOrDefault(cd => cd.Id == id);
+            var codigo = _context.Codigos.FirstOrDefault(cod => cod.Id == id);
+
+            if (codigo == null)
+                throw new Exception("Código inválido!");
+
+            return codigo;
+            // return _context.Codigos.FirstOrDefault(cod => cod.Id == id);
         }
 
+        // ================================================================
         [HttpPost]
-        public string Post()
+        public IEnumerable<Codigo> Post(Codigo codigo)
         {
-            return "Return post código.";
+            _context.Codigos.Add(codigo);
+
+            // se, conseguir inserir UM
+            // retorna TODOS
+            if (_context.SaveChanges() > 0)
+                return _context.Codigos;
+            else
+                // senão, lança uma exceção
+                throw new Exception("Não foi possível adicionar novo código!");
         }
 
+        // ================================================================
         [HttpPut("{id}")]
-        public string Put(int id)
+        public Codigo Put(int id, Codigo codigo)
         {
-            return $"Return put código ID: {id}.";
+            // se id do objeto diferente do informado, lança uma excecão
+            if (codigo.Id != id)
+                throw new Exception("Impossível atualizar, código inválido!");
+
+            _context.Update(codigo);
+
+            if (_context.SaveChanges() > 0)
+                return _context.Codigos.FirstOrDefault(cod => cod.Id == id);
+            else
+                return new Codigo();
         }
 
+        // ================================================================
         [HttpDelete("{id}")]
-        public string Delete(int id)
+        public bool Delete(int id)
         {
-            return $"Return delete código ID: {id}.";
+            var codigo = _context.Codigos.FirstOrDefault(cod => cod.Id == id);
+
+            if (codigo == null)
+                throw new Exception("Impossível deletar, código inválido!");
+
+            _context.Remove(codigo);
+
+            return _context.SaveChanges() > 0;
         }
+
 
     }
 }
