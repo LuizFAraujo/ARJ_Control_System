@@ -8,16 +8,25 @@
         "@types": true,
         ".vscode": true,
         ".next": true,
-        "node_modules": true,
 
-        ".gitignore": true,
+        
+        "**/*node_modules": true,
+
+        "**/*.gitignore": true,
 
         "LICENSE": true,
         
-        // "**/*.json": true,
+
+
         "**/*.csproj": true,
 
-        "*.md": true,
+        "**/*.sln": true,
+
+        "**/*.md": true,
+
+        "**/*.json": true,
+
+
 
 
         "*.env": true,
